@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(claude config:*)",
+      "Bash(/c/xampp/php/php.exe --version)",
+      "Bash(cmd.exe /c \"php --version\")"
+    ]
+  }
+}
