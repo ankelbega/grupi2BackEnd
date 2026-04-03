@@ -19,17 +19,15 @@ class AuthController extends Controller
      */
     public function register(RegisterRequest $request): JsonResponse
     {
-        // Create the user — password is auto-hashed by the User model's cast
         $user = User::create([
-            'first_name' => $request->first_name,
-            'last_name'  => $request->last_name,
-            'email'      => $request->email,
-            'password'   => $request->password,
-            'role'       => 'student',
-            'is_active'  => true,
+            'PERD_EMER'     => $request->PERD_EMER,
+            'PERD_MBIEMER'  => $request->PERD_MBIEMER,
+            'PERD_EMAIL'    => $request->PERD_EMAIL,
+            'PERD_FJKALIM'  => $request->PERD_FJKALIM, // hashed automatically via cast
+            'PERD_TIPI'     => $request->PERD_TIPI,
+            'PERD_AKTIV'    => true,
         ]);
 
-        // Issue a Sanctum personal access token
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
@@ -49,8 +47,12 @@ class AuthController extends Controller
      */
     public function login(LoginRequest $request): JsonResponse
     {
-        // Attempt authentication with the provided credentials
-        if (!Auth::attempt($request->only('email', 'password'))) {
+        // 'password' is the special key Auth::attempt uses for credential checking;
+        // it is validated against $user->getAuthPassword() which returns PERD_FJKALIM.
+        if (!Auth::attempt([
+            'PERD_EMAIL' => $request->PERD_EMAIL,
+            'password'   => $request->PERD_FJKALIM,
+        ])) {
             return response()->json([
                 'success' => false,
                 'message' => 'Invalid credentials',
@@ -63,7 +65,6 @@ class AuthController extends Controller
         // Revoke all previous tokens so only one session is active at a time
         $user->tokens()->delete();
 
-        // Issue a fresh token
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
@@ -83,7 +84,6 @@ class AuthController extends Controller
      */
     public function logout(Request $request): JsonResponse
     {
-        // Delete only the token that was used for this request
         $request->user()->currentAccessToken()->delete();
 
         return response()->json([
@@ -116,12 +116,12 @@ class AuthController extends Controller
     private function userPayload(User $user): array
     {
         return [
-            'id'         => $user->id,
-            'first_name' => $user->first_name,
-            'last_name'  => $user->last_name,
-            'email'      => $user->email,
-            'role'       => $user->role,
-            'is_active'  => $user->is_active,
+            'id'          => $user->PERD_ID,
+            'first_name'  => $user->PERD_EMER,
+            'last_name'   => $user->PERD_MBIEMER,
+            'email'       => $user->PERD_EMAIL,
+            'tipi'        => $user->PERD_TIPI,
+            'is_active'   => $user->PERD_AKTIV,
         ];
     }
 }

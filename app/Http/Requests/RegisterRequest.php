@@ -6,43 +6,37 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class RegisterRequest extends FormRequest
 {
-    /**
-     * All API users are allowed to register.
-     */
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Validation rules for registration.
-     */
     public function rules(): array
     {
         return [
-            'first_name' => ['required', 'string', 'max:100'],
-            'last_name'  => ['required', 'string', 'max:100'],
-            'email'      => ['required', 'email', 'unique:users,email'],
-            'password'   => ['required', 'string', 'min:8', 'confirmed'],
+            'PERD_EMER'              => ['required', 'string', 'max:100'],
+            'PERD_MBIEMER'           => ['required', 'string', 'max:100'],
+            'PERD_EMAIL'             => ['required', 'email', 'unique:PERDORUES,PERD_EMAIL'],
+            'PERD_FJKALIM'           => ['required', 'string', 'min:8', 'confirmed'],
+            'PERD_FJKALIM_confirmation' => ['required'],
+            'PERD_TIPI'              => ['required', 'string'],
         ];
     }
 
-    /**
-     * Custom validation messages.
-     */
     public function messages(): array
     {
         return [
-            'first_name.required' => 'First name is required.',
-            'first_name.max'      => 'First name may not exceed 100 characters.',
-            'last_name.required'  => 'Last name is required.',
-            'last_name.max'       => 'Last name may not exceed 100 characters.',
-            'email.required'      => 'Email address is required.',
-            'email.email'         => 'Please provide a valid email address.',
-            'email.unique'        => 'The email has already been taken.',
-            'password.required'   => 'Password is required.',
-            'password.min'        => 'The password must be at least 8 characters.',
-            'password.confirmed'  => 'Password confirmation does not match.',
+            'PERD_EMER.required'     => 'First name is required.',
+            'PERD_EMER.max'          => 'First name may not exceed 100 characters.',
+            'PERD_MBIEMER.required'  => 'Last name is required.',
+            'PERD_MBIEMER.max'       => 'Last name may not exceed 100 characters.',
+            'PERD_EMAIL.required'    => 'Email address is required.',
+            'PERD_EMAIL.email'       => 'Please provide a valid email address.',
+            'PERD_EMAIL.unique'      => 'This email has already been taken.',
+            'PERD_FJKALIM.required'  => 'Password is required.',
+            'PERD_FJKALIM.min'       => 'Password must be at least 8 characters.',
+            'PERD_FJKALIM.confirmed' => 'Password confirmation does not match.',
+            'PERD_TIPI.required'     => 'User type is required.',
         ];
     }
 }
