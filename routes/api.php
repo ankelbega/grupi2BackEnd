@@ -16,8 +16,8 @@ use Illuminate\Support\Facades\Route;
 
 // ─── Public Routes ───────────────────────────────────────────────────────────
 
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login',    [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:register');
+Route::post('/login',    [AuthController::class, 'login'])->middleware('throttle:login');
 
 // ─── Protected Routes (require Bearer token) ─────────────────────────────────
 

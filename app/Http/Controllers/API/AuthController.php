@@ -28,7 +28,11 @@ class AuthController extends Controller
             'PERD_AKTIV'    => true,
         ]);
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $token = $user->createToken(
+            'auth_token',
+            ['*'],
+            now()->addMinutes(config('sanctum.expiration'))
+        )->plainTextToken;
 
         return response()->json([
             'success' => true,
@@ -65,7 +69,11 @@ class AuthController extends Controller
         // Revoke all previous tokens so only one session is active at a time
         $user->tokens()->delete();
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $token = $user->createToken(
+            'auth_token',
+            ['*'],
+            now()->addMinutes(config('sanctum.expiration'))
+        )->plainTextToken;
 
         return response()->json([
             'success' => true,
