@@ -30,4 +30,9 @@ class LendeProgrami extends Model
     {
         return $this->belongsTo(VersionKurrikule::class, 'KURR_VER_ID', 'KURR_VER_ID');
     }
+
+    public function seksionet()
+    {
+        return $this->hasMany(Seksion::class, 'LP_ID', 'LP_ID');
+    }
 }

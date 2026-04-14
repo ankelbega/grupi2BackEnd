@@ -1,6 +1,11 @@
 <?php
 
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\LendeController;
+use App\Http\Controllers\API\OrarController;
+use App\Http\Controllers\API\PedagogController;
+use App\Http\Controllers\API\ProgramStudimiController;
+use App\Http\Controllers\API\SeksionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,4 +29,11 @@ Route::post('/login',    [AuthController::class, 'login'])->middleware('throttle
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me',      [AuthController::class, 'me']);
+
+    // ─── Schedule Management ──────────────────────────────────────────────────
+    Route::get('/lende',     [LendeController::class,          'index']);
+    Route::get('/pedagoget', [PedagogController::class,        'index']);
+    Route::get('/programe',  [ProgramStudimiController::class, 'index']);
+    Route::get('/seksione',  [SeksionController::class,        'index']);
+    Route::get('/orare',     [OrarController::class,           'index']);
 });
