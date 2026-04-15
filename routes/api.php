@@ -56,6 +56,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/pedagoget/{id}/orari',   [PedagogController::class, 'orariPedagogu']);
 
     // ─── Other Resources ─────────────────────────────────────────────────────
-    Route::get('/seksione',  [SeksionController::class,        'index']);
-    Route::get('/orare',     [OrarController::class,           'index']);
+    Route::get('/seksione',  [SeksionController::class, 'index']);
+
+    // ─── Orare (Schedule) ────────────────────────────────────────────────────
+    Route::post('/orare/kontrollo',  [OrarController::class, 'kontrolloKonfliktet']);
+    Route::get('/orare',             [OrarController::class, 'index']);
+    Route::get('/orare/{id}',        [OrarController::class, 'show']);
+    Route::post('/orare',            [OrarController::class, 'store']);
+    Route::put('/orare/{id}',        [OrarController::class, 'update']);
+    Route::delete('/orare/{id}',     [OrarController::class, 'destroy']);
 });
