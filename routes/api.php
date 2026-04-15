@@ -46,8 +46,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/programe/{id}',       [ProgramStudimiController::class, 'destroy']);
     Route::get('/programe/{id}/lende',    [ProgramStudimiController::class, 'lendeProgramit']);
 
+    // ─── Pedagoget (Pedagogues) ───────────────────────────────────────────────
+    Route::get('/pedagoget',              [PedagogController::class, 'index']);
+    Route::get('/pedagoget/{id}',         [PedagogController::class, 'show']);
+    Route::post('/pedagoget',             [PedagogController::class, 'store']);
+    Route::put('/pedagoget/{id}',         [PedagogController::class, 'update']);
+    Route::delete('/pedagoget/{id}',      [PedagogController::class, 'destroy']);
+    Route::get('/pedagoget/{id}/lende',   [PedagogController::class, 'lendetESemestrit']);
+    Route::get('/pedagoget/{id}/orari',   [PedagogController::class, 'orariPedagogu']);
+
     // ─── Other Resources ─────────────────────────────────────────────────────
-    Route::get('/pedagoget', [PedagogController::class,        'index']);
     Route::get('/seksione',  [SeksionController::class,        'index']);
     Route::get('/orare',     [OrarController::class,           'index']);
 });
