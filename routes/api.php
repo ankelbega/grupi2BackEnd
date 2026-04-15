@@ -30,10 +30,24 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me',      [AuthController::class, 'me']);
 
-    // ─── Schedule Management ──────────────────────────────────────────────────
-    Route::get('/lende',     [LendeController::class,          'index']);
+    // ─── Lende (Subjects) ────────────────────────────────────────────────────
+    Route::get('/lende',                  [LendeController::class,          'index']);
+    Route::get('/lende/{id}',             [LendeController::class,          'show']);
+    Route::post('/lende',                 [LendeController::class,          'store']);
+    Route::put('/lende/{id}',             [LendeController::class,          'update']);
+    Route::delete('/lende/{id}',          [LendeController::class,          'destroy']);
+    Route::get('/lende/{id}/pedagoget',   [LendeController::class,          'pedagoget']);
+
+    // ─── Programe Studimi (Study Programs) ───────────────────────────────────
+    Route::get('/programe',               [ProgramStudimiController::class, 'index']);
+    Route::get('/programe/{id}',          [ProgramStudimiController::class, 'show']);
+    Route::post('/programe',              [ProgramStudimiController::class, 'store']);
+    Route::put('/programe/{id}',          [ProgramStudimiController::class, 'update']);
+    Route::delete('/programe/{id}',       [ProgramStudimiController::class, 'destroy']);
+    Route::get('/programe/{id}/lende',    [ProgramStudimiController::class, 'lendeProgramit']);
+
+    // ─── Other Resources ─────────────────────────────────────────────────────
     Route::get('/pedagoget', [PedagogController::class,        'index']);
-    Route::get('/programe',  [ProgramStudimiController::class, 'index']);
     Route::get('/seksione',  [SeksionController::class,        'index']);
     Route::get('/orare',     [OrarController::class,           'index']);
 });
