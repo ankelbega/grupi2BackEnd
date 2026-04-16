@@ -14,6 +14,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->validateCsrfTokens(except: [
+            'api/*',
+        ]);
+
         // Apply to every API route:
         // 1. EnsureFrontendRequestsAreStateful — enables Sanctum cookie auth for SPAs
         //    (harmless here since we use token auth, but required by Sanctum docs)
