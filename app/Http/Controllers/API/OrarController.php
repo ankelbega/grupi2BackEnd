@@ -57,6 +57,18 @@ class OrarController extends Controller
             });
         }
 
+        if ($request->filled('prog_id')) {
+            $query->whereHas('seksioni', function ($q) use ($request) {
+                $q->whereHas('lenda', function ($q2) use ($request) {
+                    $q2->whereHas('lendeProgramit', function ($q3) use ($request) {
+                        $q3->whereHas('versioniKurrikules', function ($q4) use ($request) {
+                            $q4->where('PROG_ID', $request->prog_id);
+                        });
+                    });
+                });
+            });
+        }
+
         $oraret = $query->get()->map(function ($orar) {
             $seksioni = $orar->seksioni;
             $pedagog  = $seksioni?->pedagogi?->perdoruesi;

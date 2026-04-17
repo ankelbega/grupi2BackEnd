@@ -183,13 +183,18 @@ class PedagogController extends Controller
     {
         $validated = $request->validate([
             'DEP_ID'            => 'required|exists:DEPARTAMENT,DEP_ID',
-            'PERD_ID'           => 'required|exists:PERDORUES,PERD_ID',
+            'PERD_ID'           => 'nullable|integer|exists:PERDORUES,PERD_ID',
             'PED_KOD'           => 'required|unique:PEDAGOG,PED_KOD',
             'PED_SPECIALIZIM'   => 'required|string',
+            'PED_DATA_PUNESIMIT' => 'nullable|date',
             'PED_LLOJ_KONTRATE' => 'required|in:kohe-plote,kohe-pjesshme',
+            'PERD_EMER'         => 'nullable|string',
+            'PERD_MBIEMER'      => 'nullable|string',
         ]);
 
-        $pedagog = Pedagog::create($validated);
+        $pedagog = Pedagog::create(array_intersect_key($validated, array_flip([
+            'DEP_ID', 'PERD_ID', 'PED_KOD', 'PED_SPECIALIZIM', 'PED_DATA_PUNESIMIT', 'PED_LLOJ_KONTRATE',
+        ])));
 
         return response()->json([
             'success' => true,
@@ -213,13 +218,18 @@ class PedagogController extends Controller
 
         $validated = $request->validate([
             'DEP_ID'            => 'required|exists:DEPARTAMENT,DEP_ID',
-            'PERD_ID'           => 'required|exists:PERDORUES,PERD_ID',
+            'PERD_ID'           => 'nullable|integer|exists:PERDORUES,PERD_ID',
             'PED_KOD'           => ['required', Rule::unique('PEDAGOG', 'PED_KOD')->ignore($pedagog->PED_ID, 'PED_ID')],
             'PED_SPECIALIZIM'   => 'required|string',
+            'PED_DATA_PUNESIMIT' => 'nullable|date',
             'PED_LLOJ_KONTRATE' => 'required|in:kohe-plote,kohe-pjesshme',
+            'PERD_EMER'         => 'nullable|string',
+            'PERD_MBIEMER'      => 'nullable|string',
         ]);
 
-        $pedagog->update($validated);
+        $pedagog->update(array_intersect_key($validated, array_flip([
+            'DEP_ID', 'PERD_ID', 'PED_KOD', 'PED_SPECIALIZIM', 'PED_DATA_PUNESIMIT', 'PED_LLOJ_KONTRATE',
+        ])));
 
         return response()->json([
             'success' => true,
