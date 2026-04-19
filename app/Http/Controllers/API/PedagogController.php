@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Constants\AppConstants;
 use App\Http\Controllers\Controller;
 use App\Models\Pedagog;
 use App\Models\Seksion;
@@ -187,7 +188,7 @@ class PedagogController extends Controller
             'PED_KOD'           => 'required|unique:PEDAGOG,PED_KOD',
             'PED_SPECIALIZIM'   => 'required|string',
             'PED_DATA_PUNESIMIT' => 'nullable|date',
-            'PED_LLOJ_KONTRATE' => 'required|in:kohe-plote,kohe-pjesshme',
+            'PED_LLOJ_KONTRATE' => 'required|in:' . implode(',', AppConstants::PED_KONTRATAT),
             'PERD_EMER'         => 'nullable|string',
             'PERD_MBIEMER'      => 'nullable|string',
         ]);
@@ -222,7 +223,7 @@ class PedagogController extends Controller
             'PED_KOD'           => ['required', Rule::unique('PEDAGOG', 'PED_KOD')->ignore($pedagog->PED_ID, 'PED_ID')],
             'PED_SPECIALIZIM'   => 'required|string',
             'PED_DATA_PUNESIMIT' => 'nullable|date',
-            'PED_LLOJ_KONTRATE' => 'required|in:kohe-plote,kohe-pjesshme',
+            'PED_LLOJ_KONTRATE' => 'required|in:' . implode(',', AppConstants::PED_KONTRATAT),
             'PERD_EMER'         => 'nullable|string',
             'PERD_MBIEMER'      => 'nullable|string',
         ]);

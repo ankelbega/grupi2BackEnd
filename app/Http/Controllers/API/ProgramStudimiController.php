@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Constants\AppConstants;
 use App\Http\Controllers\Controller;
 use App\Models\ProgramStudimi;
 use Illuminate\Http\JsonResponse;
@@ -114,14 +115,14 @@ class ProgramStudimiController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'PROG_EM'  => 'required|string|max:255',
-            'PROG_NIV' => 'required|string|in:Bachelor,Master,Doktorature',
+            'PROG_NIV' => 'required|string|in:' . implode(',', AppConstants::PROG_NIVELET),
             'DEP_ID'   => 'required|integer|exists:DEPARTAMENT,DEP_ID',
             'PROG_KRD' => 'required|integer|min:1',
         ], [
             'PROG_EM.required'  => 'Emri i programit eshte i detyrueshëm.',
             'PROG_EM.string'    => 'Emri i programit duhet te jete tekst.',
             'PROG_NIV.required' => 'Niveli i programit eshte i detyrueshëm.',
-            'PROG_NIV.in'       => 'Niveli duhet te jete: Bachelor, Master ose Doktorature.',
+            'PROG_NIV.in'       => 'Niveli duhet te jete: ' . implode(', ', AppConstants::PROG_NIVELET) . '.',
             'DEP_ID.required'   => 'Departamenti eshte i detyrueshëm.',
             'DEP_ID.exists'     => 'Departamenti i zgjedhur nuk ekziston.',
             'PROG_KRD.required' => 'Numri i krediteve eshte i detyrueshëm.',
@@ -164,14 +165,14 @@ class ProgramStudimiController extends Controller
 
         $validator = Validator::make($request->all(), [
             'PROG_EM'  => 'required|string|max:255',
-            'PROG_NIV' => 'required|string|in:Bachelor,Master,Doktorature',
+            'PROG_NIV' => 'required|string|in:' . implode(',', AppConstants::PROG_NIVELET),
             'DEP_ID'   => 'required|integer|exists:DEPARTAMENT,DEP_ID',
             'PROG_KRD' => 'required|integer|min:1',
         ], [
             'PROG_EM.required'  => 'Emri i programit eshte i detyrueshëm.',
             'PROG_EM.string'    => 'Emri i programit duhet te jete tekst.',
             'PROG_NIV.required' => 'Niveli i programit eshte i detyrueshëm.',
-            'PROG_NIV.in'       => 'Niveli duhet te jete: Bachelor, Master ose Doktorature.',
+            'PROG_NIV.in'       => 'Niveli duhet te jete: ' . implode(', ', AppConstants::PROG_NIVELET) . '.',
             'DEP_ID.required'   => 'Departamenti eshte i detyrueshëm.',
             'DEP_ID.exists'     => 'Departamenti i zgjedhur nuk ekziston.',
             'PROG_KRD.required' => 'Numri i krediteve eshte i detyrueshëm.',

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Constants\AppConstants;
 use App\Http\Controllers\Controller;
 use App\Models\Auditor;
 use App\Models\Orar;
@@ -145,10 +146,10 @@ class OrarController extends Controller
         $data = $request->validate([
             'SEK_ID'        => 'required|integer|exists:SEKSION,SEK_ID',
             'SALLE_ID'      => 'required|integer|exists:SALLE,SALLE_ID',
-            'ORAR_DITA'     => 'required|integer|in:1,2,3,4,5',
+            'ORAR_DITA'     => 'required|integer|in:' . implode(',', AppConstants::ORAR_DITET),
             'ORAR_ORA_FILL' => 'required|date_format:H:i',
             'ORAR_ORA_MBA'  => 'required|date_format:H:i|after:ORAR_ORA_FILL',
-            'ORAR_LLOJI'    => 'required|in:ligjerata,seminar,laborator',
+            'ORAR_LLOJI'    => 'required|in:' . implode(',', AppConstants::ORAR_LLOJET),
         ]);
 
         if (! Auditor::find($data['SALLE_ID'])) {
@@ -190,10 +191,10 @@ class OrarController extends Controller
         $data = $request->validate([
             'SEK_ID'        => 'required|integer|exists:SEKSION,SEK_ID',
             'SALLE_ID'      => 'required|integer|exists:SALLE,SALLE_ID',
-            'ORAR_DITA'     => 'required|integer|in:1,2,3,4,5',
+            'ORAR_DITA'     => 'required|integer|in:' . implode(',', AppConstants::ORAR_DITET),
             'ORAR_ORA_FILL' => 'required|date_format:H:i',
             'ORAR_ORA_MBA'  => 'required|date_format:H:i|after:ORAR_ORA_FILL',
-            'ORAR_LLOJI'    => 'required|in:ligjerata,seminar,laborator',
+            'ORAR_LLOJI'    => 'required|in:' . implode(',', AppConstants::ORAR_LLOJET),
         ]);
 
         if (! Auditor::find($data['SALLE_ID'])) {
@@ -244,10 +245,10 @@ class OrarController extends Controller
         $data = $request->validate([
             'SEK_ID'        => 'required|integer|exists:SEKSION,SEK_ID',
             'SALLE_ID'      => 'required|integer|exists:SALLE,SALLE_ID',
-            'ORAR_DITA'     => 'required|integer|in:1,2,3,4,5',
+            'ORAR_DITA'     => 'required|integer|in:' . implode(',', AppConstants::ORAR_DITET),
             'ORAR_ORA_FILL' => 'required|date_format:H:i',
             'ORAR_ORA_MBA'  => 'required|date_format:H:i|after:ORAR_ORA_FILL',
-            'ORAR_LLOJI'    => 'required|in:ligjerata,seminar,laborator',
+            'ORAR_LLOJI'    => 'required|in:' . implode(',', AppConstants::ORAR_LLOJET),
         ]);
 
         $konflikte = $this->kontrolloKonfliktetInterne($data, null);
