@@ -30,43 +30,47 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me',      [AuthController::class, 'me']);
 
-    // ─── Lende (Subjects) ────────────────────────────────────────────────────
+    // ─── GET routes - accessible by all authenticated users ──────────────────
     Route::get('/lende',                  [LendeController::class,          'index']);
     Route::get('/lende/{id}',             [LendeController::class,          'show']);
-    Route::post('/lende',                 [LendeController::class,          'store']);
-    Route::put('/lende/{id}',             [LendeController::class,          'update']);
-    Route::delete('/lende/{id}',          [LendeController::class,          'destroy']);
     Route::get('/lende/{id}/pedagoget',   [LendeController::class,          'pedagoget']);
 
-    // ─── Programe Studimi (Study Programs) ───────────────────────────────────
     Route::get('/programe',               [ProgramStudimiController::class, 'index']);
     Route::get('/programe/{id}',          [ProgramStudimiController::class, 'show']);
-    Route::post('/programe',              [ProgramStudimiController::class, 'store']);
-    Route::put('/programe/{id}',          [ProgramStudimiController::class, 'update']);
-    Route::delete('/programe/{id}',       [ProgramStudimiController::class, 'destroy']);
     Route::get('/programe/{id}/lende',    [ProgramStudimiController::class, 'lendeProgramit']);
 
-    // ─── Pedagoget (Pedagogues) ───────────────────────────────────────────────
     Route::get('/pedagoget',              [PedagogController::class, 'index']);
     Route::get('/pedagoget/{id}',         [PedagogController::class, 'show']);
-    Route::post('/pedagoget',             [PedagogController::class, 'store']);
-    Route::put('/pedagoget/{id}',         [PedagogController::class, 'update']);
-    Route::delete('/pedagoget/{id}',      [PedagogController::class, 'destroy']);
     Route::get('/pedagoget/{id}/lende',   [PedagogController::class, 'lendetESemestrit']);
     Route::get('/pedagoget/{id}/orari',   [PedagogController::class, 'orariPedagogu']);
 
-    // ─── Seksione (Sections) ─────────────────────────────────────────────────
-    Route::get('/seksione',        [SeksionController::class, 'index']);
-    Route::get('/seksione/{id}',   [SeksionController::class, 'show']);
-    Route::post('/seksione',       [SeksionController::class, 'store']);
-    Route::put('/seksione/{id}',   [SeksionController::class, 'update']);
-    Route::delete('/seksione/{id}',[SeksionController::class, 'destroy']);
+    Route::post('/orare/kontrollo',       [OrarController::class, 'kontrolloKonfliktet']);
+    Route::get('/orare',                  [OrarController::class, 'index']);
+    Route::get('/orare/{id}',             [OrarController::class, 'show']);
 
-    // ─── Orare (Schedule) ────────────────────────────────────────────────────
-    Route::post('/orare/kontrollo',  [OrarController::class, 'kontrolloKonfliktet']);
-    Route::get('/orare',             [OrarController::class, 'index']);
-    Route::get('/orare/{id}',        [OrarController::class, 'show']);
-    Route::post('/orare',            [OrarController::class, 'store']);
-    Route::put('/orare/{id}',        [OrarController::class, 'update']);
-    Route::delete('/orare/{id}',     [OrarController::class, 'destroy']);
+    Route::get('/seksione',               [SeksionController::class, 'index']);
+    Route::get('/seksione/{id}',          [SeksionController::class, 'show']);
+
+    // ─── POST/PUT/DELETE routes - admin only ─────────────────────────────────
+    Route::middleware('role:admin')->group(function () {
+        Route::post('/lende',              [LendeController::class,          'store']);
+        Route::put('/lende/{id}',          [LendeController::class,          'update']);
+        Route::delete('/lende/{id}',       [LendeController::class,          'destroy']);
+
+        Route::post('/programe',           [ProgramStudimiController::class, 'store']);
+        Route::put('/programe/{id}',       [ProgramStudimiController::class, 'update']);
+        Route::delete('/programe/{id}',    [ProgramStudimiController::class, 'destroy']);
+
+        Route::post('/pedagoget',          [PedagogController::class, 'store']);
+        Route::put('/pedagoget/{id}',      [PedagogController::class, 'update']);
+        Route::delete('/pedagoget/{id}',   [PedagogController::class, 'destroy']);
+
+        Route::post('/orare',              [OrarController::class, 'store']);
+        Route::put('/orare/{id}',          [OrarController::class, 'update']);
+        Route::delete('/orare/{id}',       [OrarController::class, 'destroy']);
+
+        Route::post('/seksione',           [SeksionController::class, 'store']);
+        Route::put('/seksione/{id}',       [SeksionController::class, 'update']);
+        Route::delete('/seksione/{id}',    [SeksionController::class, 'destroy']);
+    });
 });

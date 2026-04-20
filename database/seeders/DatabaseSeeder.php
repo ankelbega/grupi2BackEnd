@@ -71,8 +71,13 @@ class DatabaseSeeder extends Seeder
         // 3. PERDORUES
         // ═════════════════════════════════════════════════════════════════════
         $pass = Hash::make('password123');
+        $adminPass = Hash::make('admin123');
 
         DB::table('PERDORUES')->insert([
+            // Adminët
+            ['PERD_EMER' => 'Admin',      'PERD_MBIEMER' => 'Sistemi',    'PERD_EMAIL' => 'admin@uni.edu.al',      'PERD_FJKALIM' => $adminPass, 'PERD_TIPI' => 'admin', 'PERD_AKTIV' => true],
+            ['PERD_EMER' => 'Rektori',    'PERD_MBIEMER' => 'Universitetit', 'PERD_EMAIL' => 'rektori@uni.edu.al', 'PERD_FJKALIM' => $adminPass, 'PERD_TIPI' => 'admin', 'PERD_AKTIV' => true],
+            ['PERD_EMER' => 'Sekretaria', 'PERD_MBIEMER' => 'Akademike',  'PERD_EMAIL' => 'sekretaria@uni.edu.al', 'PERD_FJKALIM' => $adminPass, 'PERD_TIPI' => 'admin', 'PERD_AKTIV' => true],
             // Pedagoget
             ['PERD_EMER' => 'Artan',   'PERD_MBIEMER' => 'Berisha', 'PERD_EMAIL' => 'artan.berisha@uni.edu.al',   'PERD_FJKALIM' => $pass, 'PERD_TIPI' => 'pedagog', 'PERD_AKTIV' => true],
             ['PERD_EMER' => 'Blerina', 'PERD_MBIEMER' => 'Koci',    'PERD_EMAIL' => 'blerina.koci@uni.edu.al',    'PERD_FJKALIM' => $pass, 'PERD_TIPI' => 'pedagog', 'PERD_AKTIV' => true],

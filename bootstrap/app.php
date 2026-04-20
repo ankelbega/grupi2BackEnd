@@ -27,6 +27,8 @@ return Application::configure(basePath: dirname(__DIR__))
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             ForceJsonResponse::class,
         ]);
+
+        $middleware->alias(['role' => \App\Http\Middleware\CheckRole::class]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         // Laravel automatically returns JSON for requests that have
