@@ -6,8 +6,10 @@ use App\Constants\AppConstants;
 use App\Http\Controllers\Controller;
 use App\Models\Pedagog;
 use App\Models\Seksion;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 class PedagogController extends Controller
@@ -182,26 +184,49 @@ class PedagogController extends Controller
 
     public function store(Request $request): JsonResponse
     {
-        $validated = $request->validate([
-            'DEP_ID'            => 'required|exists:DEPARTAMENT,DEP_ID',
-            'PERD_ID'           => 'nullable|integer|exists:PERDORUES,PERD_ID',
-            'PED_KOD'           => 'required|unique:PEDAGOG,PED_KOD',
-            'PED_SPECIALIZIM'   => 'required|string',
-            'PED_DATA_PUNESIMIT' => 'nullable|date',
-            'PED_LLOJ_KONTRATE' => 'required|in:' . implode(',', AppConstants::PED_KONTRATAT),
-            'PERD_EMER'         => 'nullable|string',
-            'PERD_MBIEMER'      => 'nullable|string',
+        $request->validate([
+            'PERD_EMER'          => 'required|string|max:100',
+            'PERD_MBIEMER'       => 'required|string|max:100',
+            'PERD_EMAIL'         => 'required|email|unique:PERDORUES,PERD_EMAIL',
+            'PERD_FJKALIM'       => 'required|string|min:6',
+            'DEP_ID'             => 'required|integer|exists:DEPARTAMENT,DEP_ID',
+            'PED_KOD'            => 'required|string|unique:PEDAGOG,PED_KOD',
+            'PED_SPECIALIZIM'    => 'required|string',
+            'PED_LLOJ_KONTRATE'  => 'required|in:kohe-plote,kohe-pjesshme',
+            'PED_DATA_PUNESIMIT' => 'required|date',
         ]);
 
-        $pedagog = Pedagog::create(array_intersect_key($validated, array_flip([
-            'DEP_ID', 'PERD_ID', 'PED_KOD', 'PED_SPECIALIZIM', 'PED_DATA_PUNESIMIT', 'PED_LLOJ_KONTRATE',
-        ])));
+        try {
+            DB::transaction(function () use ($request) {
+                $perdorues = User::create([
+                    'PERD_EMER'    => $request->PERD_EMER,
+                    'PERD_MBIEMER' => $request->PERD_MBIEMER,
+                    'PERD_EMAIL'   => $request->PERD_EMAIL,
+                    'PERD_FJKALIM' => bcrypt($request->PERD_FJKALIM),
+                    'PERD_TIPI'    => 'pedagog',
+                    'PERD_AKTIV'   => true,
+                ]);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Pedagogu u shtua me sukses',
-            'data'    => $pedagog,
-        ], 201);
+                Pedagog::create([
+                    'DEP_ID'             => $request->DEP_ID,
+                    'PERD_ID'            => $perdorues->PERD_ID,
+                    'PED_KOD'            => $request->PED_KOD,
+                    'PED_SPECIALIZIM'    => $request->PED_SPECIALIZIM,
+                    'PED_LLOJ_KONTRATE'  => $request->PED_LLOJ_KONTRATE,
+                    'PED_DATA_PUNESIMIT' => $request->PED_DATA_PUNESIMIT,
+                ]);
+            });
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Pedagogu u shtua me sukses',
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gabim gjate krijimit te pedagogut',
+            ], 500);
+        }
     }
 
     // ─── update ───────────────────────────────────────────────────────────────
