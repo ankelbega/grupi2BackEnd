@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\Lende;
+use App\Models\LendeProgrami;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -16,7 +17,7 @@ class LendeController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $query = Lende::with('departamenti');
+        $query = Lende::with(['departamenti', 'lendeProgramit']);
 
         if ($request->filled('dep_id')) {
             $query->where('DEP_ID', $request->dep_id);
@@ -36,13 +37,20 @@ class LendeController extends Controller
             });
         }
 
+        if ($request->has('zgjedhore')) {
+            $query->whereHas('lendeProgramit', function ($q) use ($request) {
+                $q->where('LP_ZGJEDHORE', $request->zgjedhore);
+            });
+        }
+
         $lendet = $query->get()->map(function ($lende) {
             return [
-                'LEN_ID'   => $lende->LEN_ID,
-                'LEN_EM'   => $lende->LEN_EM,
-                'LEN_KOD'  => $lende->LEN_KOD,
-                'DEP_ID'   => $lende->DEP_ID,
-                'DEP_EM'   => $lende->departamenti?->DEP_EM,
+                'LEN_ID'        => $lende->LEN_ID,
+                'LEN_EM'        => $lende->LEN_EM,
+                'LEN_KOD'       => $lende->LEN_KOD,
+                'DEP_ID'        => $lende->DEP_ID,
+                'DEP_EM'        => $lende->departamenti->DEP_EM ?? null,
+                'LP_ZGJEDHORE'  => $lende->lendeProgramit->first()->LP_ZGJEDHORE ?? 0,
             ];
         });
 
@@ -60,7 +68,7 @@ class LendeController extends Controller
     {
         $lende = Lende::with([
             'departamenti',
-            'lendeProgramit.versioniKurrikules.programiStudimit',
+            'lendeProgrami.versioniKurrikules.programiStudimit',
             'seksionet.pedagogi.perdoruesi',
         ])->find($id);
 
@@ -122,9 +130,10 @@ class LendeController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'LEN_EM'  => 'required|string|max:255',
-            'LEN_KOD' => 'required|string|max:50|unique:LENDE,LEN_KOD',
-            'DEP_ID'  => 'required|integer|exists:DEPARTAMENT,DEP_ID',
+            'LEN_EM'        => 'required|string|max:255',
+            'LEN_KOD'       => 'required|string|max:50|unique:LENDE,LEN_KOD',
+            'DEP_ID'        => 'required|integer|exists:DEPARTAMENT,DEP_ID',
+            'LP_ZGJEDHORE'  => 'nullable|boolean',
         ], [
             'LEN_EM.required'  => 'Emri i lendes eshte i detyrueshëm.',
             'LEN_EM.string'    => 'Emri i lendes duhet te jete tekst.',
@@ -142,12 +151,27 @@ class LendeController extends Controller
             ], 422);
         }
 
-        $lende = Lende::create($validator->validated());
+        $lende = Lende::create($validator->safe()->only(['LEN_EM', 'LEN_KOD', 'DEP_ID']));
+
+        LendeProgrami::create([
+            'LEN_ID'       => $lende->LEN_ID,
+            'KURR_VER_ID'  => $request->KURR_VER_ID ?? 1,
+            'LP_KREDIT'    => $request->LP_KREDIT ?? 6,
+            'LP_SEMESTRI'  => $request->LP_SEMESTRI ?? 1,
+            'LP_VITI'      => $request->LP_VITI ?? 1,
+            'LP_ZGJEDHORE' => $request->LP_ZGJEDHORE ?? 0,
+        ]);
 
         return response()->json([
             'success' => true,
             'message' => 'Lenda u krijua me sukses.',
-            'data'    => $lende,
+            'data'    => [
+                'LEN_ID'       => $lende->LEN_ID,
+                'LEN_EM'       => $lende->LEN_EM,
+                'LEN_KOD'      => $lende->LEN_KOD,
+                'DEP_ID'       => $lende->DEP_ID,
+                'LP_ZGJEDHORE' => $request->LP_ZGJEDHORE ?? 0,
+            ],
         ], 201);
     }
 
@@ -189,6 +213,10 @@ class LendeController extends Controller
         }
 
         $lende->update($validator->validated());
+
+        if ($request->has('LP_ZGJEDHORE')) {
+            $lende->lendeProgramit()->update(['LP_ZGJEDHORE' => $request->LP_ZGJEDHORE]);
+        }
 
         return response()->json([
             'success' => true,
