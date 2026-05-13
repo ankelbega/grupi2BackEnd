@@ -131,7 +131,10 @@ class OrarController extends Controller
                 'salla'         => $orar->salla,
                 'seksioni'      => $seksioni,
                 'lenda'         => $seksioni?->lenda,
-                'semestri'      => $seksioni?->semestri,
+                'semestri'      => $seksioni?->semestri ? [
+                    'SEM_ID' => $seksioni->semestri->SEM_ID,
+                    'SEM_NR' => $seksioni->semestri->SEM_NR,
+                ] : null,
                 'pedagog_em'    => $pedagog
                     ? trim($pedagog->PERD_EMER . ' ' . $pedagog->PERD_MBIEMER)
                     : null,

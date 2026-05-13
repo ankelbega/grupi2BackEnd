@@ -13,7 +13,25 @@ class SeksionController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
-        $seksionet = Seksion::with('lenda', 'pedagogi', 'semestri')->get();
+        $seksionet = Seksion::with('lenda', 'pedagogi', 'semestri')->get()->map(function ($s) {
+            return [
+                'SEK_ID'        => $s->SEK_ID,
+                'SEK_KOD'       => $s->SEK_KOD,
+                'SEK_KAPACITET' => $s->SEK_KAPACITET,
+                'SEK_MENYRE'    => $s->SEK_MENYRE,
+                'SEK_STATUS'    => $s->SEK_STATUS,
+                'LEN_ID'        => $s->LEN_ID,
+                'SEM_ID'        => $s->SEM_ID,
+                'PED_ID'        => $s->PED_ID,
+                'SALLE_ID'      => $s->SALLE_ID,
+                'lenda'         => $s->lenda,
+                'pedagogi'      => $s->pedagogi,
+                'semestri'      => $s->semestri ? [
+                    'SEM_ID' => $s->semestri->SEM_ID,
+                    'SEM_NR' => $s->semestri->SEM_NR,
+                ] : null,
+            ];
+        });
 
         return response()->json([
             'success' => true,
@@ -29,7 +47,26 @@ class SeksionController extends Controller
             return response()->json(['message' => 'Seksioni nuk u gjet.'], 404);
         }
 
-        return response()->json(['success' => true, 'data' => $seksion], 200);
+        return response()->json([
+            'success' => true,
+            'data'    => [
+                'SEK_ID'        => $seksion->SEK_ID,
+                'SEK_KOD'       => $seksion->SEK_KOD,
+                'SEK_KAPACITET' => $seksion->SEK_KAPACITET,
+                'SEK_MENYRE'    => $seksion->SEK_MENYRE,
+                'SEK_STATUS'    => $seksion->SEK_STATUS,
+                'LEN_ID'        => $seksion->LEN_ID,
+                'SEM_ID'        => $seksion->SEM_ID,
+                'PED_ID'        => $seksion->PED_ID,
+                'SALLE_ID'      => $seksion->SALLE_ID,
+                'lenda'         => $seksion->lenda,
+                'pedagogi'      => $seksion->pedagogi,
+                'semestri'      => $seksion->semestri ? [
+                    'SEM_ID' => $seksion->semestri->SEM_ID,
+                    'SEM_NR' => $seksion->semestri->SEM_NR,
+                ] : null,
+            ],
+        ], 200);
     }
 
     public function store(Request $request): JsonResponse
