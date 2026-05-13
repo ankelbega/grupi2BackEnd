@@ -14,7 +14,6 @@ class Pedagog extends Model
         'PERD_ID',
         'DEP_ID',
         'PED_KOD',
-        'PED_TITULLI',
         'PED_SPECIALIZIM',
         'PED_DATA_PUNESIMIT',
         'PED_LLOJ_KONTRATE',

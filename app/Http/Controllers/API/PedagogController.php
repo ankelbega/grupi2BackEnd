@@ -73,7 +73,7 @@ class PedagogController extends Controller
                 'SEK_STATUS'  => $seksion->SEK_STATUS,
                 'LEN_EM'      => $seksion->lenda?->LEN_EM,
                 'SEM_ID'      => $seksion->SEM_ID,
-                'SEM_EMRI'    => $seksion->semestri?->SEM_EMRI ?? null,
+                'SEM_NR'      => $seksion->semestri?->SEM_NR ?? null,
             ];
         });
 
@@ -260,7 +260,16 @@ class PedagogController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Pedagogu u perditesua me sukses',
-            'data'    => $pedagog,
+            'data'    => [
+                'PED_ID'            => $pedagog->PED_ID,
+                'PED_KOD'           => $pedagog->PED_KOD,
+                'PED_SPECIALIZIM'   => $pedagog->PED_SPECIALIZIM,
+                'PED_LLOJ_KONTRATE' => $pedagog->PED_LLOJ_KONTRATE,
+                'DEP_ID'            => $pedagog->DEP_ID,
+                'PERD_EMER'         => $pedagog->perdoruesi?->PERD_EMER,
+                'PERD_MBIEMER'      => $pedagog->perdoruesi?->PERD_MBIEMER,
+                'PERD_EMAIL'        => $pedagog->perdoruesi?->PERD_EMAIL,
+            ],
         ], 200);
     }
 

@@ -33,6 +33,6 @@ class LendeProgrami extends Model
 
     public function seksionet()
     {
-        return $this->hasMany(Seksion::class, 'LP_ID', 'LP_ID');
+        return $this->hasMany(Seksion::class, 'LEN_ID', 'LEN_ID');
     }
 }

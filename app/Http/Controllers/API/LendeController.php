@@ -68,7 +68,7 @@ class LendeController extends Controller
     {
         $lende = Lende::with([
             'departamenti',
-            'lendeProgrami.versioniKurrikules.programiStudimit',
+            'lendeProgramit.versioniKurrikules.programiStudimit',
             'seksionet.pedagogi.perdoruesi',
         ])->find($id);
 
@@ -134,6 +134,10 @@ class LendeController extends Controller
             'LEN_KOD'       => 'required|string|max:50|unique:LENDE,LEN_KOD',
             'DEP_ID'        => 'required|integer|exists:DEPARTAMENT,DEP_ID',
             'LP_ZGJEDHORE'  => 'nullable|boolean',
+            'KURR_VER_ID'   => 'nullable|integer|exists:VERSION_KURRIKULE,KURR_VER_ID',
+            'LP_KREDIT'     => 'nullable|integer|min:1|max:20',
+            'LP_SEMESTRI'   => 'nullable|integer|min:1|max:8',
+            'LP_VITI'       => 'nullable|integer|min:1|max:4',
         ], [
             'LEN_EM.required'  => 'Emri i lendes eshte i detyrueshëm.',
             'LEN_EM.string'    => 'Emri i lendes duhet te jete tekst.',
@@ -221,7 +225,12 @@ class LendeController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Lenda u perditesua me sukses.',
-            'data'    => $lende->fresh(),
+            'data'    => [
+                'LEN_ID'  => $lende->LEN_ID,
+                'LEN_EM'  => $lende->LEN_EM,
+                'LEN_KOD' => $lende->LEN_KOD,
+                'DEP_ID'  => $lende->DEP_ID,
+            ],
         ], 200);
     }
 

@@ -143,7 +143,13 @@ class ProgramStudimiController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Programi i studimit u krijua me sukses.',
-            'data'    => $program,
+            'data'    => [
+                'PROG_ID'  => $program->PROG_ID,
+                'PROG_EM'  => $program->PROG_EM,
+                'PROG_NIV' => $program->PROG_NIV,
+                'PROG_KRD' => $program->PROG_KRD,
+                'DEP_ID'   => $program->DEP_ID,
+            ],
         ], 201);
     }
 
@@ -237,10 +243,9 @@ class ProgramStudimiController extends Controller
     public function lendeProgramit(int $id): JsonResponse
     {
         $program = ProgramStudimi::with([
-            'versionetKurrikules' => function ($q) {
-                $q->where('KURR_VER_AKTIV', 1);
-            },
-            'versionetKurrikules.lendeProgramit.lenda',
+            'versionetKurrikules' => fn($q) => $q
+                ->where('KURR_VER_AKTIV', 1)
+                ->with('lendeProgramit.lenda'),
         ])->find($id);
 
         if (!$program) {
@@ -251,7 +256,7 @@ class ProgramStudimiController extends Controller
             ], 404);
         }
 
-        $versioniAktiv = $program->versionetKurrikules->first();
+        $versioniAktiv = $program->versionetKurrikules->firstWhere('KURR_VER_AKTIV', 1);
 
         if (!$versioniAktiv) {
             return response()->json([
