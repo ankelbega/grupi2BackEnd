@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\DashboardController;
 use App\Http\Controllers\API\LendeController;
 use App\Http\Controllers\API\OrarController;
 use App\Http\Controllers\API\PedagogController;
@@ -50,6 +51,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/seksione',               [SeksionController::class, 'index']);
     Route::get('/seksione/{id}',          [SeksionController::class, 'show']);
+
+    Route::get('/dashboard/stats',                  [DashboardController::class, 'stats']);
+    Route::get('/dashboard/orare-per-dite',         [DashboardController::class, 'orarePerDite']);
+    Route::get('/dashboard/studentet-per-program',  [DashboardController::class, 'studentetPerProgram']);
+    Route::get('/dashboard/ngarkesa-pedagoget',     [DashboardController::class, 'ngarkesaPedagoget']);
+    Route::get('/dashboard/lendet-per-departament', [DashboardController::class, 'lendetPerDepartament']);
 
     // ─── POST/PUT/DELETE routes - admin only ─────────────────────────────────
     Route::middleware('role:admin')->group(function () {
